@@ -1,4 +1,6 @@
 import json
+from datetime import datetime
+
 try:
     with open('dados.json', 'r') as arquivo:
         historico = json.load(arquivo)
@@ -15,6 +17,7 @@ for i in historico:
         saldo -= i['valor']
 
 while True:
+    print('')
     print('-=-'*5,'OrganizaBOT','-=-'*5)
     print('\n1) Adicionar receita.')
     print('2) Adicionar gastos.')
@@ -25,10 +28,16 @@ while True:
     opcoes = input('Escolha: ').upper()
     if opcoes == 'ADICIONAR RECEITA' or opcoes == '1':
         valor = float(input('Quanto deseja adicionar de receita? '))
+        descricao = input('descricao: ')
+        categoria = input('Categoria: ')
+        data = datetime.today().strftime('%d/%m/%Y %H:%M')
         saldo += valor
         historico.append({
+            "Data": data,
             "tipo": "receita",
-            "valor": valor
+            "valor": valor,
+            "descricao": descricao,
+            "categoria": categoria
         })
 
         with open('dados.json', 'w') as arquivo:
@@ -36,11 +45,16 @@ while True:
 
     elif opcoes == 'ADICIONAR GASTOS' or opcoes == '2':
         valor = float(input('Quanto foi seus gastos? '))
-        descricao = input('Descricação: ')
+        descricao = input('descricao: ')
+        categoria = input('Categoria: ')
+        data = datetime.today().strftime('%d/%m/%Y %H:%M')
         saldo -= valor
         historico.append({
+            "Data": data,
             "tipo": "gasto",
-            "valor": valor
+            "valor": valor,
+            "descricao": descricao,
+            "categoria": categoria
         })
 
         with open('dados.json', 'w') as arquivo:
@@ -50,7 +64,7 @@ while True:
     elif opcoes == 'HISTORICO' or opcoes == '4':
         print('Histórico:')
         for i in historico:
-            print(f'{i['tipo']} -> R${i['valor']:.2f} -> {descricao['Descrição']:.2f}')
+            print(f"{i['Data']} | {i['tipo']} | R${i['valor']:.2f} | {i['descricao']:} | {i['categoria']}")
     elif opcoes == 'SAIR' or opcoes == '5':
         print('Saindo...')
         break
